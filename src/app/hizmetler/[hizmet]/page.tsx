@@ -1,0 +1,18 @@
+import { MobileActionBar, SiteFooter, SiteHeader } from "@/app/site-chrome";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { business, displayPhone, telHref, whatsappHref } from "@/lib/business";
+import { districts } from "@/lib/districts";
+import { getService, services } from "@/lib/services";
+export const dynamic = "force-static";
+export function generateStaticParams() { return services.map(({ slug }) => ({ hizmet: slug })); }
+type Props = { params: Promise<{ hizmet: string }> };
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+ const { hizmet } = await params; const service = getService(hizmet); if (!service) return {};
+ return { title: `${service.title} | İstanbul 7/24 Mobil Servis`, description: `${service.description} İstanbul'un 39 ilçesinde 7/24 Kahraman Oto Lastik mobil hizmeti.`, alternates: { canonical: `/hizmetler/${service.slug}` }, openGraph: { type: "website", locale: "tr_TR", url: `${business.url}/hizmetler/${service.slug}`, title: `${service.title} | Kahraman Oto Lastik`, description: service.description } };
+}
+export default async function ServicePage({ params }: Props) {
+ const { hizmet } = await params; const service = getService(hizmet); if (!service) notFound();
+ const schema = { "@context": "https://schema.org", "@type": "Service", name: service.title, serviceType: service.title, provider: { "@type": "AutomotiveBusiness", name: business.name, telephone: business.phone, url: business.url }, areaServed: districts.map(({ name }) => ({ "@type": "AdministrativeArea", name: `${name}, İstanbul` })), description: service.description };
+ return <><SiteHeader/><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }} /><main className="area-page service-detail-page"><nav className="breadcrumbs" aria-label="Sayfa yolu"><a href="/">Ana sayfa</a><span>/</span><a href="/hizmetler">Hizmetler</a><span>/</span><span>{service.title}</span></nav><section className="area-hero"><div className="eyebrow"><span>İSTANBUL • 7/24 MOBİL SERVİS</span><i/></div><h1>{service.title.split(" ").slice(0, -1).join(" ")}<br/><em>{service.title.split(" ").slice(-1)}</em></h1><p>{service.description}</p><div className="hero-actions"><a className="button button-dark" href={telHref()}><span className="button-icon">↗</span> {displayPhone} • Hemen ara</a><a className="button button-line" href={whatsappHref(`${service.title} için destek almak istiyorum. Konumum: `)}>WhatsApp’tan konum gönder <span>↗</span></a></div></section><section className="service-detail-copy"><div className="eyebrow"><span>NASIL DESTEK ALIRSINIZ?</span><i/></div><h2>Konumunuzu paylaşın,<br/><em>uygunluğu netleştirelim.</em></h2><p>Bulunduğunuz ilçe ve mahalleyi, araç türünü, lastik ölçüsünü ve yaşadığınız sorunu belirtin. Yönlendirme, tahmini varış ve ücret bilgisi telefonla teyit edilir. Hizmet, ekip ve iş uygunluğuna göre planlanır.</p><p>Kahraman Oto Lastik; binek otomobil, SUV ve ağır vasıta araçlar için mobil lastik değişimi ve lastik tamiri hizmeti sunar. Balans ve rot ayarı hizmeti verilmemektedir.</p></section><section className="related-links"><div><div className="eyebrow"><span>BAĞLANTILI SAYFALAR</span><i/></div><h2>Diğer hizmetler<br/><em>ve bölgeler.</em></h2></div><ul>{services.filter(({ slug }) => slug !== service.slug).map((item) => <li key={item.slug}><a href={`/hizmetler/${item.slug}`}>{item.title} <span>↗</span></a></li>)}<li><a href="/hizmet-bolgeleri">39 hizmet bölgesini inceleyin <span>↗</span></a></li><li><a href="/iletisim">İletişim sayfası <span>↗</span></a></li></ul></section></main><SiteFooter/><MobileActionBar/></>;
+}

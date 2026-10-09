@@ -1,0 +1,7 @@
+export const services = [
+  { slug: "mobil-lastik-degisimi", title: "Mobil lastik değişimi", short: "Lastik değişimi gereken noktaya mobil servis yönlendirmesi.", description: "İstanbul'da bulunduğunuz noktada lastik değişimi için mobil destek alın. Araç türünüzü, konumunuzu ve lastik ihtiyacınızı telefonla iletin; servis uygunluğunu ve tahmini varış bilgisini teyit edelim.", icon: "↻" },
+  { slug: "lastik-tamiri", title: "Mobil lastik tamiri", short: "Yolda veya bulunduğunuz yerde lastik sorunu için destek.", description: "Lastik hasarı veya hava kaybı yaşadığınızda bulunduğunuz konumu ve sorunu paylaşın. Tamirin mümkün olup olmadığı, lastiğin durumuna göre yerinde değerlendirilir.", icon: "⌁" },
+  { slug: "agir-vasita-lastik", title: "Ağır vasıta lastik hizmeti", short: "Kamyon ve ağır vasıta araçlar için mobil lastik desteği.", description: "Ağır vasıta lastik ihtiyacınızda aracın bulunduğu konumu, araç türünü ve lastik ölçüsünü paylaşın. Konum erişimi ve ekip uygunluğu telefonla teyit edilir.", icon: "▰" },
+  { slug: "binek-suv-lastik", title: "Binek ve SUV lastik hizmeti", short: "Binek otomobil ve SUV araçlar için mobil lastik desteği.", description: "Binek ve SUV araçlarda lastik değişimi ya da lastik tamiri ihtiyacı için İstanbul genelinde mobil destek alın. Ararken ilçe, araç modeli ve lastik sorununu belirtin.", icon: "◎" },
+] as const;
+export function getService(slug: string) { return services.find((service) => service.slug === slug); }
